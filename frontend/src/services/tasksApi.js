@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "https://voiceit-uj7c.onrender.com/",
+  baseURL: "https://voiceit-uj7c.onrender.com/api",
 });
 
 export const fetchTasks = async (params = {}) => {
