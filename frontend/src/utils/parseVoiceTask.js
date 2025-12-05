@@ -24,9 +24,21 @@ export const parseVoiceTask = (textRaw) => {
 
   const text = textRaw.toLowerCase();
 
+  const sentences = textRaw
+    .split(/[.!?]/)
+    .map((s) => s.trim())
+    .filter(Boolean);
+
+  let extractedTitle = sentences[0] || "";
+  let extractedDescription = sentences.slice(1).join(". ") || "";
+
   // Priority
   let priority = "medium";
-  if (text.includes("high priority") || text.includes("urgent") || text.includes("critical")) {
+  if (
+    text.includes("high priority") ||
+    text.includes("urgent") ||
+    text.includes("critical")
+  ) {
     priority = "high";
   } else if (text.includes("low priority") || text.includes("low importance")) {
     priority = "low";
@@ -50,7 +62,9 @@ export const parseVoiceTask = (textRaw) => {
     dueDate = addDays(now, 1);
   } else {
     // next monday, next friday, etc
-    const matchNext = text.match(/next\s+(monday|tuesday|wednesday|thursday|friday|saturday|sunday)/);
+    const matchNext = text.match(
+      /next\s+(monday|tuesday|wednesday|thursday|friday|saturday|sunday)/
+    );
     if (matchNext) {
       const dayName = matchNext[1];
       const weekday = daysMap[dayName];
@@ -85,7 +99,10 @@ export const parseVoiceTask = (textRaw) => {
   });
 
   // Remove trailing priority/due phrases for title
-  titlePart = titlePart.replace(/by (tomorrow|today|next .*|in \d+ days).*/i, "");
+  titlePart = titlePart.replace(
+    /by (tomorrow|today|next .*|in \d+ days).*/i,
+    ""
+  );
   titlePart = titlePart.replace(/it's high priority.*/i, "");
   titlePart = titlePart.replace(/it'?s low priority.*/i, "");
 
@@ -94,7 +111,7 @@ export const parseVoiceTask = (textRaw) => {
   return {
     transcript: textRaw,
     title,
-    description: "",
+    description: extractedDescription,
     priority,
     status,
     dueDate: dueDate ? dueDate.toISOString().slice(0, 10) : null,

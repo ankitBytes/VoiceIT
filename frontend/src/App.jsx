@@ -17,7 +17,7 @@ function App() {
   return (
     <TasksProvider>
       <CssBaseline />
-      <Container maxWidth="lg" sx={{ py: 4 }}>
+      <Container maxWidth="lg" sx={{ py: 4, overflow: 'hidden' }}>
         <Header
           view={view}
           onViewChange={setView}

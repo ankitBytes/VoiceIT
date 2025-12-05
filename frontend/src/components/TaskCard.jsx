@@ -17,7 +17,7 @@ const TaskCard = ({ task, onEdit }) => {
   return (
     <Card sx={{ mb: 1.5 }}>
       <CardContent>
-        <Stack direction="row" justifyContent="space-between" alignItems="flex-start">
+        <Stack direction="row" justifyContent="space-between" alignItems="flex-start" spacing={1}>
           <Stack spacing={0.5}>
             <Typography variant="subtitle1" fontWeight="bold">
               {task.title}
@@ -44,7 +44,7 @@ const TaskCard = ({ task, onEdit }) => {
               )}
             </Stack>
           </Stack>
-          <Stack direction="row" spacing={1}>
+          <Stack direction={{md: "row", xs: "column"}} spacing={1}>
             <IconButton size="small" onClick={onEdit}>
               <EditIcon fontSize="small" />
             </IconButton>

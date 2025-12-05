@@ -7,6 +7,8 @@ import {
   MenuItem,
   Button,
   Stack,
+  useMediaQuery,
+  useTheme,
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useTasks } from "../context/TasksContext.jsx";
@@ -22,6 +24,9 @@ const defaultValues = {
 const TaskFormModal = ({ open, onClose, initialData, clearInitialData }) => {
   const [values, setValues] = useState(defaultValues);
   const { addTask, editTask } = useTasks();
+
+  const theme = useTheme();
+  const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
   useEffect(() => {
     if (initialData) {
@@ -68,8 +73,15 @@ const TaskFormModal = ({ open, onClose, initialData, clearInitialData }) => {
   };
 
   return (
-    <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
+    <Dialog
+      open={open}
+      onClose={onClose}
+      fullWidth
+      maxWidth="sm"
+      fullScreen={fullScreen}   // ⭐ IMPORTANT: fullscreen on mobile
+    >
       <DialogTitle>{initialData ? "Edit Task" : "Create Task"}</DialogTitle>
+
       <DialogContent>
         <Stack spacing={2} sx={{ mt: 1 }}>
           <TextField
@@ -78,6 +90,7 @@ const TaskFormModal = ({ open, onClose, initialData, clearInitialData }) => {
             onChange={handleChange("title")}
             fullWidth
           />
+
           <TextField
             label="Description"
             value={values.description}
@@ -86,7 +99,8 @@ const TaskFormModal = ({ open, onClose, initialData, clearInitialData }) => {
             multiline
             minRows={2}
           />
-          <Stack direction="row" spacing={2}>
+
+          <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
             <TextField
               label="Status"
               select
@@ -98,6 +112,7 @@ const TaskFormModal = ({ open, onClose, initialData, clearInitialData }) => {
               <MenuItem value="in-progress">In Progress</MenuItem>
               <MenuItem value="done">Done</MenuItem>
             </TextField>
+
             <TextField
               label="Priority"
               select
@@ -110,6 +125,7 @@ const TaskFormModal = ({ open, onClose, initialData, clearInitialData }) => {
               <MenuItem value="high">High</MenuItem>
             </TextField>
           </Stack>
+
           <TextField
             label="Due Date"
             type="date"
@@ -119,6 +135,7 @@ const TaskFormModal = ({ open, onClose, initialData, clearInitialData }) => {
           />
         </Stack>
       </DialogContent>
+
       <DialogActions>
         <Button onClick={onClose}>Cancel</Button>
         <Button onClick={handleSubmit} variant="contained">

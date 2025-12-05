@@ -21,24 +21,38 @@ const Header = ({ view, onViewChange, onAddTask, onVoiceClick }) => {
         gap: 2,
         alignItems: "center",
         justifyContent: "space-between",
+
+        flexDirection: { xs: "column", sm: "column", md: "row" },
+        textAlign: { xs: "center", md: "left" },
       }}
     >
+      {/* Title Area */}
       <Box>
         <Typography variant="h4" fontWeight="bold">
           Voice Task Tracker
         </Typography>
         <Typography variant="body2" color="text.secondary">
-          Speak your tasks. Let the app do the boring parsing.
+          Speak your tasks. Let the app do the parsing.
         </Typography>
       </Box>
 
-      <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
+      {/* Controls */}
+      <Box
+        sx={{
+          display: "flex",
+          gap: 2,
+          flexWrap: "wrap",
+          alignItems: "center",
+          justifyContent: { xs: "center", md: "flex-end" },
+        }}
+      >
         <TextField
           size="small"
           placeholder="Search by title or description"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
+
         <ToggleButtonGroup
           size="small"
           value={view}

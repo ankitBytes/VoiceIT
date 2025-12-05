@@ -20,15 +20,19 @@ const TaskBoard = ({ onEditTask }) => {
   }
 
   return (
-    <Stack direction="row" spacing={2} sx={{ alignItems: "flex-start" }}>
+    <Stack
+      direction={{ sm: "row", xs: "column" }}
+      spacing={2}
+      sx={{ alignItems: "flex-start", overflowX: "auto", maxWidth: "100%" }}
+    >
       {columns.map((col) => (
         <Box
           key={col.id}
           sx={{
             flex: 1,
-            minHeight: "200px",
             borderRadius: 2,
             bgcolor: "#fafafa",
+            width: "100%",
             p: 2,
           }}
         >
@@ -38,7 +42,11 @@ const TaskBoard = ({ onEditTask }) => {
           {tasks
             .filter((t) => t.status === col.id)
             .map((task) => (
-              <TaskCard key={task._id} task={task} onEdit={() => onEditTask(task)} />
+              <TaskCard
+                key={task._id}
+                task={task}
+                onEdit={() => onEditTask(task)}
+              />
             ))}
         </Box>
       ))}
