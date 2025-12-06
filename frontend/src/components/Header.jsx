@@ -5,13 +5,31 @@ import {
   ToggleButtonGroup,
   TextField,
   IconButton,
+  Button,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import MicIcon from "@mui/icons-material/Mic";
 import { useTasks } from "../context/TasksContext.jsx";
+import { useAuth } from "../context/AuthContext.jsx";
+import { useNavigate } from "react-router-dom";
+import { logOut } from "../services/auth.js";
 
 const Header = ({ view, onViewChange, onAddTask, onVoiceClick }) => {
   const { search, setSearch } = useTasks();
+
+  const { setUser } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogoutClick = async () => {
+    try {
+      await logOut();
+      setUser(null); // Clear global user
+      navigate("/login", { replace: true }); // Redirect to login
+    } catch (err) {
+      console.error("Logout failed:", err);
+      alert("Logout failed");
+    }
+  };
 
   return (
     <Box
@@ -70,6 +88,19 @@ const Header = ({ view, onViewChange, onAddTask, onVoiceClick }) => {
         <IconButton color="primary" onClick={onAddTask}>
           <AddIcon />
         </IconButton>
+      </Box>
+      <Box
+        sx={{
+          display: "flex",
+          gap: 2,
+          flexWrap: "wrap",
+          alignItems: "center",
+          justifyContent: { xs: "center", md: "flex-end" },
+        }}
+      >
+        <Button variant="contained" color="error" onClick={handleLogoutClick}>
+          Logout
+        </Button>
       </Box>
     </Box>
   );

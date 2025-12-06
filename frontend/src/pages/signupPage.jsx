@@ -1,40 +1,45 @@
 import { Box, Button, TextField, Typography } from "@mui/material";
 import { useState } from "react";
-import { handleLogin } from "../services/auth";
+import { handleSignup } from "../services/auth.js"; 
 import { useAuth } from "../context/AuthContext";
-import { useNavigate } from "react-router-dom";
 
-const Login = () => {
-  const { setUser } = useAuth();  // we store the user from backend here
-  const navigate = useNavigate();
+const Signup = () => {
+  const { setUser } = useAuth();
 
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  const [form, setForm] = useState({
+    username: "",
+    email: "",
+    password: "",
+  });
+
   const [loading, setLoading] = useState(false);
+
+  const handleChange = (field) => (e) => {
+    setForm((prev) => ({ ...prev, [field]: e.target.value }));
+  };
 
   const onSubmit = async (e) => {
     e.preventDefault();
 
-    if (!username.trim() || !password.trim()) {
-      alert("Please enter both username and password");
+    if (!form.username.trim() || !form.email.trim() || !form.password.trim()) {
+      alert("All fields are required");
       return;
     }
 
     try {
       setLoading(true);
-      
-      const data = await handleLogin({ username, password });
+
+      const data = await handleSignup(form);
 
       if (data?.user) {
         setUser(data.user);
-        navigate("/");
       } else {
         alert("Invalid server response");
       }
 
     } catch (err) {
       console.error(err);
-      alert(err.response?.data?.message || "Login failed");
+      alert(err.response?.data?.message || "Signup failed");
     } finally {
       setLoading(false);
     }
@@ -43,21 +48,31 @@ const Login = () => {
   return (
     <Box sx={{ textAlign: "center", marginTop: "50px" }}>
       <Typography variant="h4" fontWeight={"bold"} gutterBottom>
-        Welcome Back!
+        Create Your Account
       </Typography>
 
       <Typography variant="body1" color="textSecondary" gutterBottom>
-        Log in to continue.
+        Sign up to start managing your tasks effortlessly!
       </Typography>
 
       <form onSubmit={onSubmit} style={{ padding: "5vh 0" }}>
         <Box sx={{ padding: "1vh 0" }}>
           <TextField
             fullWidth
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
             variant="outlined"
             placeholder="Username"
+            value={form.username}
+            onChange={handleChange("username")}
+          />
+        </Box>
+
+        <Box sx={{ padding: "1vh 0" }}>
+          <TextField
+            fullWidth
+            variant="outlined"
+            placeholder="Email"
+            value={form.email}
+            onChange={handleChange("email")}
           />
         </Box>
 
@@ -65,16 +80,12 @@ const Login = () => {
           <TextField
             fullWidth
             type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
             variant="outlined"
             placeholder="Password"
+            value={form.password}
+            onChange={handleChange("password")}
           />
         </Box>
-
-        <Typography variant="body2" color="textSecondary">
-          Don't have an account? <a href="/signup">Register here</a>
-        </Typography>
 
         <Button
           type="submit"
@@ -82,11 +93,11 @@ const Login = () => {
           disabled={loading}
           sx={{ margin: "2vh 0" }}
         >
-          {loading ? "Logging in..." : "Login"}
+          {loading ? "Creating account..." : "Sign Up"}
         </Button>
       </form>
     </Box>
   );
 };
 
-export default Login;
+export default Signup;
